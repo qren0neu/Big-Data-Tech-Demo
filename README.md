@@ -73,3 +73,5 @@ Examples for running:
 4. Create Mapping in ElasticSearch and create Index
 
 (Go to http://localhost:5601/app/dev_tools#/console to view them)
+
+Else: one thing need to be considered is that a google cloud account should be registered and you may have to get your credentials to enable Google OAuth2
