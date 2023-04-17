@@ -1,0 +1,75 @@
+{
+	"$id":"plan",
+	"type":"object",
+	"description":"Basic information of Plan",
+	"properties": {
+		"planCostShares": {
+			"$id":"planCostShares",
+			"type":"object",
+			"description":"Payment and deduction information of Plan",
+			"properties": {
+				"deductible": {"type": "number"},
+				"_org":  {"type": "string"},
+				"copay": {"type": "number"},
+				"objectId": {"type": "string"},
+				"objectType": {"type": "string"}
+			},
+			"required":["deductible","_org","copay","objectId","objectType"]
+		}, 
+		"linkedPlanServices": {
+			"$id":"linkedPlanServices",
+			"type":"array",
+			"items": {
+				"$id":"linkedPlanService",
+				"type":"object",
+				"description":"Information about one of the other services related",
+				"properties": {
+					"linkedService": {
+						"$id": "linkedService",
+						"type": "object",
+						"description":"Information about linked service",
+						"properties": {
+							"name": {"type": "string"},
+							"_org":  {"type": "string"},
+							"objectId": {"type": "string"},
+							"objectType": {"type": "string"}
+						},
+						"required": ["name","_org","objectId","objectType"]
+					},
+					"planserviceCostShares": {
+						"$id": "planserviceCostShares",
+						"type": "object",
+						"description":"Payment and deduction information of linked Plan",
+						"properties": {
+							"deductible": {"type": "number"},
+							"copay": {"type": "number"},
+							"_org":  {"type": "string"},
+							"objectId": {"type": "string"},
+							"objectType": {"type": "string"}
+						},
+						"required": ["deductible", "copay","_org","objectId","objectType"]
+					},
+					"_org":  {"type": "string"},
+					"objectId": {"type": "string"},
+					"objectType": {"type": "string"}
+				},
+				"required":["linkedService","_org","planserviceCostShares","objectId","objectType"]
+			},
+			"description":"Information about other services related",
+		}, 
+		"_org": {"type":"string"}, 
+		"objectId": {"type":"string"}, 
+		"objectType": {"type":"string"},
+		"planType": {"type":"string"},
+		"creationDate": {"type":"string"}
+	},
+	"required": [
+		"planCostShares", 
+		"linkedPlanServices", 
+		"_org", 
+		"objectId", 
+		"objectType",
+		"planType",
+		"creationDate"
+	]
+}

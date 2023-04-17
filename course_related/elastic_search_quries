@@ -1,0 +1,134 @@
+DELETE /plan_index_test
+
+PUT /plan_index_test
+{
+    "mappings": {
+        "properties": {
+            "_org": {
+                "type": "keyword"
+            },
+            "objectId": {
+                "type": "keyword"
+            },
+            "objectType": {
+                "type": "keyword"
+            },
+            "name": {
+                "type": "text"
+            },
+            "creationDate": {
+                "format": "MM-dd-yyyy",
+                "type": "date"
+            },
+            "planType": {
+                "type": "keyword"
+            },
+            "relation": {
+                "type": "join",
+                "relations": {
+                    "linkedPlanServices": [
+                        "linkedService",
+                        "planserviceCostShares"
+                    ],
+                    "plan": [
+                        "planCostShares",
+                        "linkedPlanServices"
+                    ]
+                }
+            }
+        }
+    }
+}
+
+
+PUT plan_index_test/_doc/12xvxc345ssdsds-508?refresh
+{"planType":"inNetwork","_org":"example.com","creationDate":"12-12-2017","objectId":"12xvxc345ssdsds-508","objectType":"plan","relation":"plan"}
+
+PUT plan_index_test/_doc/1234vxc2324sdf-501?routing=12xvxc345ssdsds-508&refresh
+{"deductible":2000,"_org":"example.com","copay":23,"objectId":"1234vxc2324sdf-501","objectType":"membercostshare","relation":{"parent":"12xvxc345ssdsds-508","name":"planCostShares"}}
+
+PUT plan_index_test/_doc/27283xvx9asdff-504?routing=12xvxc345ssdsds-508&refresh
+{"_org":"example.com","objectId":"27283xvx9asdff-504","objectType":"planservice","relation":{"parent":"12xvxc345ssdsds-508","name":"linkedPlanServices"}}
+
+PUT plan_index_test/_doc/1234520xvc30asdf-502?routing=27283xvx9asdff-504&refresh
+{"name":"Yearly physical","_org":"example.com","objectId":"1234520xvc30asdf-502","objectType":"service","relation":{"parent":"27283xvx9asdff-504","name":"linkedService"}}
+
+PUT plan_index_test/_doc/1234512xvc1314asdfs-503?routing=27283xvx9asdff-504&refresh
+{"deductible":10,"_org":"example.com","copay":0,"objectId":"1234512xvc1314asdfs-503","objectType":"membercostshare","relation":{"parent":"27283xvx9asdff-504","name":"planserviceCostShares"}}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "match": {
+      "objectType": "plan"
+    }
+  }
+}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "has_parent": {
+      "parent_type": "plan",
+      "query": {
+        "match_all": {}
+      }
+    }
+  }
+}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "has_child": {
+      "type": "planserviceCostShares",
+      "query": {
+        "match_all": {}
+      }
+    }
+  }
+}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "has_child": {
+      "type": "linkedService",
+      "query": {
+        "match_all": {}
+      },
+      "inner_hits": {
+        "name": "linkedServices",
+        "_source": ["name", "relation", "objectId"],
+        "size": 5
+      }
+    }
+  }
+}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "match": {
+      "planType": "inNetwork"
+    }
+  }
+}
+
+GET plan_index_test/_search
+{
+  "query": {
+    "match": {
+      "objectId": "27283xvx9sdf-508"
+    }
+  }
+}
+
+GET plan_index_test/_mapping
